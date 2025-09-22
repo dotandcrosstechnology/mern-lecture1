@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MERN Stack Lecture 1 - Modern JavaScript</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                transparent,
+                transparent 10px,
+                rgba(255,255,255,0.05) 10px,
+                rgba(255,255,255,0.05) 20px
+            );
+            animation: slide 20s linear infinite;
+        }
+        
+        @keyframes slide {
+            0% { transform: translateX(-50px) translateY(-50px); }
+            100% { transform: translateX(0px) translateY(0px); }
+        }
+        
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .header .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .instructor {
+            background: #f8f9fa;
+            padding: 1rem 2rem;
+            border-left: 4px solid #3498db;
+            margin: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .content {
+            padding: 2rem;
+        }
+        
+        .topic {
+            margin-bottom: 3rem;
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .topic:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+        
+        .topic-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            cursor: pointer;
+        }
+        
+        .topic-number {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 1rem;
+            box-shadow: 0 2px 10px rgba(52, 152, 219, 0.3);
+        }
+        
+        .topic h2 {
+            color: #2c3e50;
+            font-size: 1.8rem;
+            flex: 1;
+        }
+        
+        .toggle-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #3498db;
+            transition: transform 0.3s ease;
+        }
+        
+        .toggle-btn.active {
+            transform: rotate(180deg);
+        }
+        
+        .topic-content {
+            display: none;
+            animation: slideDown 0.3s ease;
+        }
+        
+        .topic-content.active {
+            display: block;
+        }
+        
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .code-container {
+            position: relative;
+            margin: 1rem 0;
+            background: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        
+        .code-header {
+            background: #2d2d2d;
+            padding: 0.8rem 1rem;
+            display: flex;
+            justify-content: between;
+            align-items: center;
+            border-bottom: 1px solid #404040;
+        }
+        
+        .code-title {
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        .copy-btn {
+            background: #3498db;
+            color: white;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: background 0.3s ease;
+            margin-left: auto;
+        }
+        
+        .copy-btn:hover {
+            background: #2980b9;
+        }
+        
+        .copy-btn.copied {
+            background: #27ae60;
+        }
+        
+        pre {
+            background: #1e1e1e;
+            color: #f8f8f2;
+            padding: 1.5rem;
+            overflow-x: auto;
+            margin: 0;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+        
+        .keyword { color: #ff79c6; }
+        .string { color: #f1fa8c; }
+        .comment { color: #6272a4; }
+        .function { color: #50fa7b; }
+        .number { color: #bd93f9; }
+        
+        .explanation {
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+        }
+        
+        .highlight {
+            background: linear-gradient(120deg, #a8edea 0%, #fed6e3 100%);
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            font-weight: 500;
+        }
+        
+        .demo-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 6px;
+            cursor: pointer;
+            margin: 0.5rem;
+            font-weight: 500;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+        
+        .demo-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .output {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        
+        .navigation {
+            position: fixed;
+            right: 2rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: white;
+            border-radius: 25px;
+            padding: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            z-index: 1000;
+        }
+        
+        .nav-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #bdc3c7;
+            margin: 0.5rem 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-dot.active {
+            background: #3498db;
+            transform: scale(1.3);
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2rem;
+            }
+            
+            .content {
+                padding: 1rem;
+            }
+            
+            .topic {
+                padding: 1.5rem;
+            }
+            
+            .navigation {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MERN Stack Development</h1>
+            <p class="subtitle">Lecture 1: Modern JavaScript (ES6+) Review & Advanced Concepts</p>
+        </div>
+        
+        <div class="instructor">
+            <strong>Instructor:</strong> Anas Yousaf<br>
+            <small>CEO, Dot and Cross Technology & Whisper Tunnel</small>
+        </div>
+        
+        <div class="content">
+            <!-- Topic 1: ES6+ Features -->
+            <div class="topic" id="topic1">
+                <div class="topic-header" onclick="toggleTopic('topic1')">
+                    <div class="topic-number">1</div>
+                    <h2>ES6+ Features Recap</h2>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="topic-content">
+                    <h3>Let and Const</h3>
+                    <div class="explanation">
+                        <p><span class="highlight">let</span> and <span class="highlight">const</span> provide block-scoped variables, solving many issues with <code>var</code>.</p>
+                    </div>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Variable Declarations</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// var vs let vs const</span>
+<span class="keyword">var</span> x = <span class="number">1</span>;
+<span class="keyword">let</span> y = <span class="number">2</span>;
+<span class="keyword">const</span> z = <span class="number">3</span>;
+
+<span class="comment">// Block scoping demonstration</span>
+<span class="keyword">if</span> (<span class="keyword">true</span>) {
+    <span class="keyword">var</span> varVariable = <span class="string">"I'm function scoped"</span>;
+    <span class="keyword">let</span> letVariable = <span class="string">"I'm block scoped"</span>;
+    <span class="keyword">const</span> constVariable = <span class="string">"I'm also block scoped"</span>;
+}
+
+<span class="function">console.log</span>(varVariable); <span class="comment">// Works</span>
+<span class="comment">// console.log(letVariable); // ReferenceError</span>
+<span class="comment">// console.log(constVariable); // ReferenceError</span></code></pre>
+                    </div>
+                    
+                    <button class="demo-btn" onclick="demoLetConst()">Run Demo</button>
+                    <div id="letConstOutput" class="output"></div>
+                    
+                    <h3>Arrow Functions</h3>
+                    <div class="explanation">
+                        <p>Arrow functions provide a concise syntax and lexical <code>this</code> binding.</p>
+                    </div>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Arrow Functions Examples</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Traditional function</span>
+<span class="keyword">function</span> <span class="function">traditional</span>(a, b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="comment">// Arrow function</span>
+<span class="keyword">const</span> <span class="function">arrow</span> = (a, b) => a + b;
+
+<span class="comment">// Arrow function with single parameter</span>
+<span class="keyword">const</span> <span class="function">square</span> = x => x * x;
+
+<span class="comment">// Arrow function with multiple lines</span>
+<span class="keyword">const</span> <span class="function">complexArrow</span> = (name, age) => {
+    <span class="keyword">const</span> message = <span class="string">`Hello, I'm ${name} and I'm ${age} years old`</span>;
+    <span class="keyword">return</span> message.toUpperCase();
+};</code></pre>
+                    </div>
+                    
+                    <button class="demo-btn" onclick="demoArrowFunctions()">Run Demo</button>
+                    <div id="arrowOutput" class="output"></div>
+                    
+                    <h3>Destructuring</h3>
+                    <div class="explanation">
+                        <p>Destructuring allows unpacking values from arrays or properties from objects into distinct variables.</p>
+                    </div>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Destructuring Examples</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Array destructuring</span>
+<span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="keyword">const</span> [first, second, ...rest] = numbers;
+
+<span class="comment">// Object destructuring</span>
+<span class="keyword">const</span> person = {
+    name: <span class="string">'John Doe'</span>,
+    age: <span class="number">30</span>,
+    city: <span class="string">'New York'</span>,
+    country: <span class="string">'USA'</span>
+};
+
+<span class="keyword">const</span> { name, age, ...location } = person;
+
+<span class="comment">// Nested destructuring</span>
+<span class="keyword">const</span> user = {
+    id: <span class="number">1</span>,
+    profile: {
+        username: <span class="string">'johndoe'</span>,
+        social: {
+            twitter: <span class="string">'@johndoe'</span>
+        }
+    }
+};
+
+<span class="keyword">const</span> { profile: { username, social: { twitter } } } = user;</code></pre>
+                    </div>
+                    
+                    <button class="demo-btn" onclick="demoDestructuring()">Run Demo</button>
+                    <div id="destructuringOutput" class="output"></div>
+                </div>
+            </div>
+
+            <!-- Topic 2: Template Literals -->
+            <div class="topic" id="topic2">
+                <div class="topic-header" onclick="toggleTopic('topic2')">
+                    <div class="topic-number">2</div>
+                    <h2>Template Literals and String Methods</h2>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="topic-content">
+                    <div class="explanation">
+                        <p>Template literals provide an easy way to interpolate variables and expressions into strings.</p>
+                    </div>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Template Literals</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="keyword">const</span> name = <span class="string">'Anas'</span>;
+<span class="keyword">const</span> company = <span class="string">'Dot and Cross Technology'</span>;
+<span class="keyword">const</span> age = <span class="number">25</span>;
+
+<span class="comment">// Basic template literal</span>
+<span class="keyword">const</span> greeting = <span class="string">`Hello, my name is ${name}!`</span>;
+
+<span class="comment">// Multi-line strings</span>
+<span class="keyword">const</span> multiLine = <span class="string">`
+    This is a multi-line string.
+    It preserves line breaks.
+    Very useful for HTML templates.
+`</span>;
+
+<span class="comment">// Expression evaluation</span>
+<span class="keyword">const</span> calculation = <span class="string">`The result is: ${5 + 3 * 2}`</span>;
+
+<span class="comment">// Function calls in template literals</span>
+<span class="keyword">const</span> <span class="function">formatName</span> = name => name.toUpperCase();
+<span class="keyword">const</span> formatted = <span class="string">`Hello, ${formatName(name)}!`</span>;
+
+<span class="comment">// Tagged template literals</span>
+<span class="keyword">function</span> <span class="function">highlight</span>(strings, ...values) {
+    <span class="keyword">return</span> strings.reduce((result, string, i) => {
+        <span class="keyword">return</span> result + string + (values[i] ? <span class="string">`<mark>${values[i]}</mark>`</span> : <span class="string">''</span>);
+    }, <span class="string">''</span>);
+}
+
+<span class="keyword">const</span> highlighted = highlight<span class="string">`My name is ${name} and I work at ${company}`</span>;</code></pre>
+                    </div>
+                    
+                    <button class="demo-btn" onclick="demoTemplateLiterals()">Run Demo</button>
+                    <div id="templateOutput" class="output"></div>
+                    
+                    <h3>Modern String Methods</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">String Methods</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="keyword">const</span> text = <span class="string">'JavaScript is awesome'</span>;
+
+<span class="comment">// ES6+ String methods</span>
+text.startsWith(<span class="string">'Java'</span>); <span class="comment">// true</span>
+text.endsWith(<span class="string">'some'</span>); <span class="comment">// true</span>
+text.includes(<span class="string">'Script'</span>); <span class="comment">// true</span>
+text.repeat(<span class="number">3</span>); <span class="comment">// Repeats the string 3 times</span>
+
+<span class="comment">// Padding methods</span>
+<span class="string">'5'</span>.padStart(<span class="number">3</span>, <span class="string">'0'</span>); <span class="comment">// '005'</span>
+<span class="string">'5'</span>.padEnd(<span class="number">3</span>, <span class="string">'0'</span>); <span class="comment">// '500'</span></code></pre>
+                    </div>
+                    
+                    <button class="demo-btn" onclick="demoStringMethods()">Run Demo</button>
+                    <div id="stringMethodsOutput" class="output"></div>
+                </div>
+            </div>
+
+            <!-- Topic 3: Spread/Rest Operators -->
+            <div class="topic" id="topic3">
+                <div class="topic-header" onclick="toggleTopic('topic3')">
+                    <div class="topic-number">3</div>
+                    <h2>Spread/Rest Operators</h2>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="topic-content">
+                    <div class="explanation">
+                        <p>The spread (...) operator allows an iterable to expand in places where 0+ arguments are expected.</p>
+                    </div>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Spread Operator Examples</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Array spreading</span>
+<span class="keyword">const</span> arr1 = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="keyword">const</span> arr2 = [<span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>];
+<span class="keyword">const</span> combined = [...arr1, ...arr2]; <span class="comment">// [1, 2, 3, 4, 5, 6]</span>
+
+<span class="comment">// Object spreading</span>
+<span class="keyword">const</span> obj1 = { a: <span class="number">1</span>, b: <span class="number">2</span> };
+<span class="keyword">const</span> obj2 = { c: <span class="number">3</span>, d: <span class="number">4</span> };
+<span class="keyword">const</span> merged = { ...obj1, ...obj2 }; <span class="comment">// { a: 1, b: 2, c: 3, d: 4 }</span>
+
+<span class="comment">// Function arguments</span>
+<span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+Math.max(...numbers); <span class="comment">// 5</span>
+
+<span class="comment">// Copying arrays/objects</span>
+<span class="keyword">const</span> originalArray = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>];
+<span class="keyword">const</span> copiedArray = [...originalArray];
+
+<span class="keyword">const</span> originalObj = { name: <span class="string">'John'</span>, age: <span class="number">30</span> };
+<span class="keyword">const</span> copiedObj = { ...originalObj };</code></pre>
+                    </div>
+                    
+                    <h3>Rest Parameters</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Rest Parameters</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Rest parameters in functions</span>
+<span class="keyword">function</span> <span class="function">sum</span>(...numbers) {
+    <span class="keyword">return</span> numbers.reduce((total, num) => total + num, <span class="number">0</span>);
+}
+
+sum(<span class="number">1, 2, 3, 4, 5</span>); <span class="comment">// 15</span>
+
+<span class="comment">// Mixed parameters</span>
+<span class="keyword">function</span> <span class="function">greet</span>(greeting, ...names) {
+    <span class="keyword">return</span> <span class="string">`${greeting} ${names.join(', ')}!`</span>;
+}
+
+greet(<span class="string">'Hello'</span>, <span class="string">'Alice'</span>, <span class="string">'Bob'</span>, <span class="string">'Charlie'</span>);
+
+<span class="comment">// Rest in destructuring</span>
+<span class="keyword">const</span> [first, second, ...others] = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="keyword">const</span> { name, ...rest } = { name: <span class="string">'John'</span>, age: <span class="number">30</span>, city: <span class="string">'NYC'</span> };</code></pre>
+                    </div>
+                    
+                    <button class="demo-btn" onclick="demoSpreadRest()">Run Demo</button>
+                    <div id="spreadRestOutput" class="output"></div>
+                </div>
+            </div>
+
+            <!-- Topic 4: Modules -->
+            <div class="topic" id="topic4">
+                <div class="topic-header" onclick="toggleTopic('topic4')">
+                    <div class="topic-number">4</div>
+                    <h2>Modules (import/export)</h2>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="topic-content">
+                    <div class="explanation">
+                        <p>ES6 modules allow you to organize code into reusable pieces with explicit dependencies.</p>
+                    </div>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">math.js - Module Example</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Named exports</span>
+<span class="keyword">export</span> <span class="keyword">const</span> PI = <span class="number">3.14159</span>;
+
+<span class="keyword">export</span> <span class="keyword">function</span> <span class="function">add</span>(a, b) {
+    <span class="keyword">return</span> a + b;
+}
+
+<span class="keyword">export</span> <span class="keyword">function</span> <span class="function">multiply</span>(a, b) {
+    <span class="keyword">return</span> a * b;
+}
+
+<span class="comment">// Default export</span>
+<span class="keyword">export</span> <span class="keyword">default</span> <span class="keyword">function</span> <span class="function">subtract</span>(a, b) {
+    <span class="keyword">return</span> a - b;
+}
+
+<span class="comment">// Export object</span>
+<span class="keyword">const</span> calculator = {
+    <span class="function">divide</span>(a, b) {
+        <span class="keyword">return</span> b !== <span class="number">0</span> ? a / b : <span class="string">'Cannot divide by zero'</span>;
+    },
+    <span class="function">power</span>(base, exponent) {
+        <span class="keyword">return</span> Math.pow(base, exponent);
+    }
+};
+
+<span class="keyword">export</span> { calculator };</code></pre>
+                    </div>
+                    
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">main.js - Import Examples</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Named imports</span>
+<span class="keyword">import</span> { add, multiply, PI } <span class="keyword">from</span> <span class="string">'./math.js'</span>;
+
+<span class="comment">// Default import</span>
+<span class="keyword">import</span> subtract <span class="keyword">from</span> <span class="string">'./math.js'</span>;
+
+<span class="comment">// Import all as namespace</span>
+<span class="keyword">import</span> * <span class="keyword">as</span> MathUtils <span class="keyword">from</span> <span class="string">'./math.js'</span>;
+
+<span class="comment">// Mixed imports</span>
+<span class="keyword">import</span> subtract, { add, calculator } <span class="keyword">from</span> <span class="string">'./math.js'</span>;
+
+<span class="comment">// Rename imports</span>
+<span class="keyword">import</span> { add <span class="keyword">as</span> sum, multiply <span class="keyword">as</span> product } <span class="keyword">from</span> <span class="string">'./math.js'</span>;
+
+<span class="comment">// Dynamic imports (ES2020)</span>
+<span class="keyword">const</span> <span class="function">loadMath</span> = <span class="keyword">async</span> () => {
+    <span class="keyword">const</span> mathModule = <span class="keyword">await</span> <span class="keyword">import</span>(<span class="string">'./math.js'</span>);
+    <span class="keyword">return</span> mathModule;
+};</code></pre>
+                    </div>
+                    
+                    <button class="demo-btn" onclick="demoModules()">Show Module Usage</button>
+                    <div id="modulesOutput" class="output"></div>
+                </div>
+            </div>
+
+            <!-- Topic 5: Array Methods -->
+            <div class="topic" id="topic5">
+                <div class="topic-header" onclick="toggleTopic('topic5')">
+                    <div class="topic-number">5</div>
+                    <h2>Array Methods (map, filter, reduce, forEach)</h2>
+                    <button class="toggle-btn">▼</button>
+                </div>
+                <div class="topic-content">
+                    <div class="explanation">
+                        <p>Modern array methods provide powerful functional programming capabilities for data manipulation.</p>
+                    </div>
+                    
+                    <h3>Map Method</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Array.map() Examples</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Basic map usage</span>
+<span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="keyword">const</span> doubled = numbers.map(num => num * <span class="number">2</span>);
+<span class="function">console.log</span>(doubled); <span class="comment">// [2, 4, 6, 8, 10]</span>
+
+<span class="comment">// Transforming objects</span>
+<span class="keyword">const</span> users = [
+    { name: <span class="string">'Alice'</span>, age: <span class="number">25</span> },
+    { name: <span class="string">'Bob'</span>, age: <span class="number">30</span> },
+    { name: <span class="string">'Charlie'</span>, age: <span class="number">35</span> }
+];
+
+<span class="keyword">const</span> userNames = users.map(user => user.name);
+<span class="keyword">const</span> userProfiles = users.map(user => ({
+    ...user,
+    isAdult: user.age >= <span class="number">18</span>,
+    category: user.age < <span class="number">30</span> ? <span class="string">'Young'</span> : <span class="string">'Mature'</span>
+}));</code></pre>
+                    </div>
+                    
+                    <h3>Filter Method</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Array.filter() Examples</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Basic filtering</span>
+<span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>, <span class="number">6</span>, <span class="number">7</span>, <span class="number">8</span>, <span class="number">9</span>, <span class="number">10</span>];
+<span class="keyword">const</span> evenNumbers = numbers.filter(num => num % <span class="number">2</span> === <span class="number">0</span>);
+<span class="keyword">const</span> greaterThanFive = numbers.filter(num => num > <span class="number">5</span>);
+
+<span class="comment">// Filtering objects</span>
+<span class="keyword">const</span> products = [
+    { name: <span class="string">'Laptop'</span>, price: <span class="number">999</span>, category: <span class="string">'Electronics'</span> },
+    { name: <span class="string">'Book'</span>, price: <span class="number">25</span>, category: <span class="string">'Education'</span> },
+    { name: <span class="string">'Phone'</span>, price: <span class="number">699</span>, category: <span class="string">'Electronics'</span> },
+    { name: <span class="string">'Pen'</span>, price: <span class="number">5</span>, category: <span class="string">'Stationery'</span> }
+];
+
+<span class="keyword">const</span> electronics = products.filter(product => 
+    product.category === <span class="string">'Electronics'</span>
+);
+<span class="keyword">const</span> affordable = products.filter(product => product.price < <span class="number">100</span>);</code></pre>
+                    </div>
+                    
+                    <h3>Reduce Method</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Array.reduce() Examples</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Basic reduce - sum of numbers</span>
+<span class="keyword">const</span> numbers = [<span class="number">1</span>, <span class="number">2</span>, <span class="number">3</span>, <span class="number">4</span>, <span class="number">5</span>];
+<span class="keyword">const</span> sum = numbers.reduce((acc, num) => acc + num, <span class="number">0</span>);
+<span class="keyword">const</span> product = numbers.reduce((acc, num) => acc * num, <span class="number">1</span>);
+
+<span class="comment">// Finding maximum value</span>
+<span class="keyword">const</span> max = numbers.reduce((max, num) => num > max ? num : max);
+
+<span class="comment">// Grouping objects</span>
+<span class="keyword">const</span> people = [
+    { name: <span class="string">'Alice'</span>, department: <span class="string">'Engineering'</span> },
+    { name: <span class="string">'Bob'</span>, department: <span class="string">'Marketing'</span> },
+    { name: <span class="string">'Charlie'</span>, department: <span class="string">'Engineering'</span> },
+    { name: <span class="string">'David'</span>, department: <span class="string">'Marketing'</span> }
+];
+
+<span class="keyword">const</span> groupedByDepartment = people.reduce((acc, person) => {
+    <span class="keyword">if</span> (!acc[person.department]) {
+        acc[person.department] = [];
+    }
+    acc[person.department].push(person.name);
+    <span class="keyword">return</span> acc;
+}, {});
+
+<span class="comment">// Counting occurrences</span>
+<span class="keyword">const</span> words = [<span class="string">'apple'</span>, <span class="string">'banana'</span>, <span class="string">'apple'</span>, <span class="string">'cherry'</span>, <span class="string">'banana'</span>, <span class="string">'apple'</span>];
+<span class="keyword">const</span> wordCount = words.reduce((acc, word) => {
+    acc[word] = (acc[word] || <span class="number">0</span>) + <span class="number">1</span>;
+    <span class="keyword">return</span> acc;
+}, {});</code></pre>
+                    </div>
+                    
+                    <h3>forEach and Other Methods</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">forEach and Additional Array Methods</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// forEach - for side effects</span>
+<span class="keyword">const</span> names = [<span class="string">'Alice'</span>, <span class="string">'Bob'</span>, <span class="string">'Charlie'</span>];
+names.forEach((name, index) => {
+    <span class="function">console.log</span>(<span class="string">`${index + 1}. ${name}`</span>);
+});
+
+<span class="comment">// find and findIndex</span>
+<span class="keyword">const</span> users = [
+    { id: <span class="number">1</span>, name: <span class="string">'Alice'</span>, active: <span class="keyword">true</span> },
+    { id: <span class="number">2</span>, name: <span class="string">'Bob'</span>, active: <span class="keyword">false</span> },
+    { id: <span class="number">3</span>, name: <span class="string">'Charlie'</span>, active: <span class="keyword">true</span> }
+];
+
+<span class="keyword">const</span> activeUser = users.find(user => user.active);
+<span class="keyword">const</span> bobIndex = users.findIndex(user => user.name === <span class="string">'Bob'</span>);
+
+<span class="comment">// some and every</span>
+<span class="keyword">const</span> numbers = [<span class="number">2</span>, <span class="number">4</span>, <span class="number">6</span>, <span class="number">8</span>];
+<span class="keyword">const</span> hasEven = numbers.some(num => num % <span class="number">2</span> === <span class="number">0</span>); <span class="comment">// true</span>
+<span class="keyword">const</span> allEven = numbers.every(num => num % <span class="number">2</span> === <span class="number">0</span>); <span class="comment">// true</span>
+
+<span class="comment">// includes</span>
+<span class="keyword">const</span> fruits = [<span class="string">'apple'</span>, <span class="string">'banana'</span>, <span class="string">'orange'</span>];
+<span class="keyword">const</span> hasApple = fruits.includes(<span class="string">'apple'</span>); <span class="comment">// true</span></code></pre>
+                    </div>
+                    
+                    <h3>Method Chaining</h3>
+                    <div class="code-container">
+                        <div class="code-header">
+                            <span class="code-title">Chaining Array Methods</span>
+                            <button class="copy-btn" onclick="copyCode(this)">Copy</button>
+                        </div>
+                        <pre><code><span class="comment">// Complex data transformation with method chaining</span>
+<span class="keyword">const</span> sales = [
+    { product: <span class="string">'Laptop'</span>, amount: <span class="number">1200</span>, category: <span class="string">'Electronics'</span> },
+    { product: <span class="string">'Phone'</span>, amount: <span class="number">800</span>, category: <span class="string">'Electronics'</span> },
+    { product: <span class="string">'Book'</span>, amount: <span class="number">25</span>, category: <span class="string">'Education'</span> },
+    { product: <span class="string">'Tablet'</span>, amount: <span class="number">400</span>, category: <span class="string">'Electronics'</span> },
+    { product: <span class="string">'Course'</span>, amount: <span class="number">150</span>, category: <span class="string">'Education'</span> }
+];
+
+<span class="keyword">const</span> highValueElectronics = sales
+    .filter(sale => sale.category === <span class="string">'Electronics'</span>)
+    .filter(sale => sale.amount > <span class="number">500</span>)
+    .map(sale => ({
+        ...sale,
+        discountedPrice: sale.amount * <span class="number">0.9</span>
+    }))
+    .reduce((total, sale) => total + sale.discountedPrice, <span class="number">0</span>);
+
+<span class="function">console.log</span>(<span class="string">`Total high-value electronics with discount: ${highValueElectronics}`</span>);</code></pre>
+                    </div>
+                    
+                    <button class="demo-btn" onclick="demoArrayMethods()">Run Array Methods Demo</button>
+                    <div id="arrayMethodsOutput" class="output"></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="navigation">
+            <div class="nav-dot active" onclick="scrollToTopic('topic1')"></div>
+            <div class="nav-dot" onclick="scrollToTopic('topic2')"></div>
+            <div class="nav-dot" onclick="scrollToTopic('topic3')"></div>
+            <div class="nav-dot" onclick="scrollToTopic('topic4')"></div>
+            <div class="nav-dot" onclick="scrollToTopic('topic5')"></div>
+        </div>
+    </div>
+
+    <script>
+        // Toggle topic content
+        function toggleTopic(topicId) {
+            const topic = document.getElementById(topicId);
+            const content = topic.querySelector('.topic-content');
+            const button = topic.querySelector('.toggle-btn');
+            
+            content.classList.toggle('active');
+            button.classList.toggle('active');
+        }
+        
+        // Copy code functionality
+        function copyCode(button) {
+            const codeBlock = button.parentElement.nextElementSibling;
+            const code = codeBlock.textContent;
+            
+            navigator.clipboard.writeText(code).then(() => {
+                const originalText = button.textContent;
+                button.textContent = 'Copied!';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = originalText;
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+        
+        // Navigation
+        function scrollToTopic(topicId) {
+            document.getElementById(topicId).scrollIntoView({ 
+                behavior: 'smooth',
+                block: 'start'
+            });
+            
+            // Update active nav dot
+            document.querySelectorAll('.nav-dot').forEach(dot => dot.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+        
+        // Demo functions
+        function demoLetConst() {
+            const output = document.getElementById('letConstOutput');
+            let result = '';
+            
+            // Demonstrate scope
+            if (true) {
+                var varVariable = "I'm function scoped";
+                let letVariable = "I'm block scoped";
+                const constVariable = "I'm also block scoped";
+                
+                result += `Inside block:\n`;
+                result += `var: ${varVariable}\n`;
+                result += `let: ${letVariable}\n`;
+                result += `const: ${constVariable}\n\n`;
+            }
+            
+            result += `Outside block:\n`;
+            result += `var: ${varVariable}\n`;
+            result += `let: undefined (ReferenceError if accessed)\n`;
+            result += `const: undefined (ReferenceError if accessed)\n`;
+            
+            output.textContent = result;
+        }
+        
+        function demoArrowFunctions() {
+            const output = document.getElementById('arrowOutput');
+            let result = '';
+            
+            // Traditional function
+            function traditional(a, b) {
+                return a + b;
+            }
+            
+            // Arrow functions
+            const arrow = (a, b) => a + b;
+            const square = x => x * x;
+            const complexArrow = (name, age) => {
+                const message = `Hello, I'm ${name} and I'm ${age} years old`;
+                return message.toUpperCase();
+            };
+            
+            result += `Traditional function: ${traditional(5, 3)}\n`;
+            result += `Arrow function: ${arrow(5, 3)}\n`;
+            result += `Square function: ${square(4)}\n`;
+            result += `Complex arrow: ${complexArrow('Anas', 25)}\n`;
+            
+            output.textContent = result;
+        }
+        
+        function demoDestructuring() {
+            const output = document.getElementById('destructuringOutput');
+            let result = '';
+            
+            // Array destructuring
+            const numbers = [1, 2, 3, 4, 5];
+            const [first, second, ...rest] = numbers;
+            
+            result += `Array destructuring:\n`;
+            result += `First: ${first}, Second: ${second}\n`;
+            result += `Rest: [${rest.join(', ')}]\n\n`;
+            
+            // Object destructuring
+            const person = {
+                name: 'John Doe',
+                age: 30,
+                city: 'New York',
+                country: 'USA'
+            };
+            
+            const { name, age, ...location } = person;
+            
+            result += `Object destructuring:\n`;
+            result += `Name: ${name}, Age: ${age}\n`;
+            result += `Location: ${JSON.stringify(location)}\n`;
+            
+            output.textContent = result;
+        }
+        
+        function demoTemplateLiterals() {
+            const output = document.getElementById('templateOutput');
+            let result = '';
+            
+            const name = 'Anas';
+            const company = 'Dot and Cross Technology';
+            const age = 25;
+            
+            const greeting = `Hello, my name is ${name}!`;
+            const calculation = `The result is: ${5 + 3 * 2}`;
+            
+            function formatName(name) {
+                return name.toUpperCase();
+            }
+            
+            const formatted = `Hello, ${formatName(name)}!`;
+            
+            result += `Basic template: ${greeting}\n`;
+            result += `With calculation: ${calculation}\n`;
+            result += `With function: ${formatted}\n`;
+            result += `Multi-line template:\n`;
+            result += `Line 1: ${name}\n`;
+            result += `Line 2: ${company}\n`;
+            result += `Line 3: Age ${age}\n`;
+            
+            output.textContent = result;
+        }
+        
+        function demoStringMethods() {
+            const output = document.getElementById('stringMethodsOutput');
+            let result = '';
+            
+            const text = 'JavaScript is awesome';
+            
+            result += `Original: "${text}"\n\n`;
+            result += `startsWith('Java'): ${text.startsWith('Java')}\n`;
+            result += `endsWith('some'): ${text.endsWith('some')}\n`;
+            result += `includes('Script'): ${text.includes('Script')}\n`;
+            result += `repeat(2): "${text.repeat(2)}"\n\n`;
+            
+            result += `Padding examples:\n`;
+            result += `'5'.padStart(3, '0'): "${'5'.padStart(3, '0')}"\n`;
+            result += `'5'.padEnd(3, '0'): "${'5'.padEnd(3, '0')}"\n`;
+            
+            output.textContent = result;
+        }
+        
+        function demoSpreadRest() {
+            const output = document.getElementById('spreadRestOutput');
+            let result = '';
+            
+            // Spread examples
+            const arr1 = [1, 2, 3];
+            const arr2 = [4, 5, 6];
+            const combined = [...arr1, ...arr2];
+            
+            result += `Spread operator:\n`;
+            result += `arr1: [${arr1.join(', ')}]\n`;
+            result += `arr2: [${arr2.join(', ')}]\n`;
+            result += `combined: [${combined.join(', ')}]\n\n`;
+            
+            // Object spread
+            const obj1 = { a: 1, b: 2 };
+            const obj2 = { c: 3, d: 4 };
+            const merged = { ...obj1, ...obj2 };
+            
+            result += `Object spread:\n`;
+            result += `obj1: ${JSON.stringify(obj1)}\n`;
+            result += `obj2: ${JSON.stringify(obj2)}\n`;
+            result += `merged: ${JSON.stringify(merged)}\n\n`;
+            
+            // Rest parameters
+            function sum(...numbers) {
+                return numbers.reduce((total, num) => total + num, 0);
+            }
+            
+            result += `Rest parameters:\n`;
+            result += `sum(1, 2, 3, 4, 5): ${sum(1, 2, 3, 4, 5)}\n`;
+            
+            output.textContent = result;
+        }
+        
+        function demoModules() {
+            const output = document.getElementById('modulesOutput');
+            let result = '';
+            
+            result += `Module System Examples:\n\n`;
+            result += `// math.js exports:\n`;
+            result += `export const PI = 3.14159;\n`;
+            result += `export function add(a, b) { return a + b; }\n`;
+            result += `export default function subtract(a, b) { return a - b; }\n\n`;
+            
+            result += `// main.js imports:\n`;
+            result += `import { add, PI } from './math.js';\n`;
+            result += `import subtract from './math.js';\n`;
+            result += `import * as MathUtils from './math.js';\n\n`;
+            
+            result += `Benefits:\n`;
+            result += `• Encapsulation\n`;
+            result += `• Reusability\n`;
+            result += `• Explicit dependencies\n`;
+            result += `• Tree shaking support\n`;
+            result += `• Better tooling support\n`;
+            
+            output.textContent = result;
+        }
+        
+        function demoArrayMethods() {
+            const output = document.getElementById('arrayMethodsOutput');
+            let result = '';
+            
+            const numbers = [1, 2, 3, 4, 5];
+            const users = [
+                { name: 'Alice', age: 25, department: 'Engineering' },
+                { name: 'Bob', age: 30, department: 'Marketing' },
+                { name: 'Charlie', age: 35, department: 'Engineering' }
+            ];
+            
+            // Map example
+            const doubled = numbers.map(num => num * 2);
+            result += `Map (double numbers):\n`;
+            result += `Original: [${numbers.join(', ')}]\n`;
+            result += `Doubled: [${doubled.join(', ')}]\n\n`;
+            
+            // Filter example
+            const adults = users.filter(user => user.age >= 30);
+            result += `Filter (age >= 30):\n`;
+            result += `Adults: ${adults.map(u => u.name).join(', ')}\n\n`;
+            
+            // Reduce example
+            const sum = numbers.reduce((acc, num) => acc + num, 0);
+            const totalAge = users.reduce((acc, user) => acc + user.age, 0);
+            
+            result += `Reduce examples:\n`;
+            result += `Sum of numbers: ${sum}\n`;
+            result += `Total age: ${totalAge}\n\n`;
+            
+            // Method chaining
+            const engineersOver25 = users
+                .filter(user => user.department === 'Engineering')
+                .filter(user => user.age > 25)
+                .map(user => user.name);
+            
+            result += `Method chaining (Engineers over 25):\n`;
+            result += `Result: [${engineersOver25.join(', ')}]\n`;
+            
+            output.textContent = result;
+        }
+        
+        // Intersection Observer for navigation dots
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const topicNumber = entry.target.id.replace('topic', '');
+                    const navDots = document.querySelectorAll('.nav-dot');
+                    navDots.forEach((dot, index) => {
+                        dot.classList.toggle('active', index === parseInt(topicNumber) - 1);
+                    });
+                }
+            });
+        }, { threshold: 0.5 });
+        
+        // Observe all topics
+        document.querySelectorAll('.topic').forEach(topic => {
+            observer.observe(topic);
+        });
+        
+        // Initialize first topic as open
+        document.addEventListener('DOMContentLoaded', () => {
+            toggleTopic('topic1');
+        });
+    </script>
+</body>
+</html>
